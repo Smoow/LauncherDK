@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,6 +37,7 @@ namespace LauncherDK
             jogarBtn.IsEnabled = false;
             GetUpdateFiles();
             getNotices();
+            Task.Run(() => checkInjector());
         }
 
         private void Open_Game(object sender, RoutedEventArgs e)
@@ -310,7 +312,7 @@ namespace LauncherDK
 
                 Uri dk = new Uri("https://portaldk.com.br/Launcher/update1.htm");
                 string content = client.DownloadString("https://portaldk.com.br/Launcher/update1.htm");
-                 StreamWriter file = new StreamWriter(tempPath + "tempfile.txt");
+                StreamWriter file = new StreamWriter(tempPath + "tempfile.txt");
                 await file.WriteLineAsync(content);
                 file.Close();
                 await WriteUpdateTextFile();
@@ -416,7 +418,31 @@ namespace LauncherDK
             }
         }
 
+        private void checkInjector()
+        {
+            // Checagem de algum programa malicioso
+            Process[] runningProcesses = Process.GetProcesses();
+            foreach (Process process in runningProcesses)
+            {
+                if (process.ProcessName.ToLower().Contains("whook")     ||  // wHooks
+                    process.ProcessName.ToLower().Contains("wsyck")     ||  // wSycks
+                    process.ProcessName.ToLower().Contains("wpe")       ||  // WPE Pro
+                    process.ProcessName.ToLower().Contains("inject")    ||  // Generic Injectors
+                    process.ProcessName.ToLower().Contains("cheat")     ||  // Cheat Engine X.XX
+                    process.ProcessName.ToLower().Contains("eden")      ||  // EdenBox (C.E. alternative)
+                    process.ProcessName.ToLower().Contains("hack")      ||  // Process Hacker
+                    process.ProcessName.ToLower().Contains("minimizer") ||  // 4trayminimizer
+                    process.ProcessName.ToLower().Contains("4tray")     ||  // 4trayminimizer
+                    process.ProcessName.ToLower().Contains("dll")       ||  // DLL Generic Injetors
+                    process.ProcessName.ToLower().Contains("extreme"))      // Extreme Injector
+                {
+                    process.Kill();
+                }
+            }
 
+            Thread.Sleep(5000);
+            Task.Run(() => checkInjector());
+        }
 
 
     }
