@@ -3,22 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LauncherDK
 {
@@ -327,7 +318,7 @@ namespace LauncherDK
         {
             string tempPath = System.IO.Path.GetTempPath();
             string[] lines = File.ReadAllLines(tempPath + "tempfile.txt");
-             StreamWriter file = new StreamWriter(tempPath + "updatesOnly.txt");
+            StreamWriter file = new StreamWriter(tempPath + "updatesOnly.txt");
             foreach (var line in lines)
             {
                 if (line.Contains("Update")) await file.WriteLineAsync(line);
@@ -407,13 +398,37 @@ namespace LauncherDK
                 }
             }
 
+            
+
             // Fecha o game caso o Launcher seja fechado
+            bool isDkOpened = false;
             Process[] runningProcesses = Process.GetProcesses();
             foreach (Process process in runningProcesses)
             {
-                if (process.ProcessName.ToLower().Contains("dk"))
+                if (!process.ProcessName.Equals("Play DK") && process.ProcessName.ToLower().Contains("dk"))
                 {
-                    process.Kill();
+                    isDkOpened = true;
+                    break;
+                }
+            }
+
+            if (isDkOpened)
+            {
+                MessageBoxResult result = MessageBox.Show("Há uma ou mais instâncias de Dungeons Knights abertas.\n\nCaso feche o Launcher, todas também serão fechadas.\n\nDeseja fechar?", "Confirme sua decisão", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        foreach (Process process in runningProcesses)
+                        {
+                            if (process.ProcessName.ToLower().Contains("dk"))
+                            {
+                                process.Kill();
+                            }
+                        }
+                        break;
+                    case MessageBoxResult.No:
+                        e.Cancel = true;
+                        break;
                 }
             }
         }
@@ -424,16 +439,16 @@ namespace LauncherDK
             Process[] runningProcesses = Process.GetProcesses();
             foreach (Process process in runningProcesses)
             {
-                if (process.ProcessName.ToLower().Contains("whook")     ||  // wHooks
-                    process.ProcessName.ToLower().Contains("wsyck")     ||  // wSycks
-                    process.ProcessName.ToLower().Contains("wpe")       ||  // WPE Pro
-                    process.ProcessName.ToLower().Contains("inject")    ||  // Generic Injectors
-                    process.ProcessName.ToLower().Contains("cheat")     ||  // Cheat Engine X.XX
-                    process.ProcessName.ToLower().Contains("eden")      ||  // EdenBox (C.E. alternative)
-                    process.ProcessName.ToLower().Contains("hack")      ||  // Process Hacker
+                if (process.ProcessName.ToLower().Contains("whook") ||  // wHooks
+                    process.ProcessName.ToLower().Contains("wsyck") ||  // wSycks
+                    process.ProcessName.ToLower().Contains("wpe") ||  // WPE Pro
+                    process.ProcessName.ToLower().Contains("inject") ||  // Generic Injectors
+                    process.ProcessName.ToLower().Contains("cheat") ||  // Cheat Engine X.XX
+                    process.ProcessName.ToLower().Contains("eden") ||  // EdenBox (C.E. alternative)
+                    process.ProcessName.ToLower().Contains("hack") ||  // Process Hacker
                     process.ProcessName.ToLower().Contains("minimizer") ||  // 4trayminimizer
-                    process.ProcessName.ToLower().Contains("4tray")     ||  // 4trayminimizer
-                    process.ProcessName.ToLower().Contains("dll")       ||  // DLL Generic Injetors
+                    process.ProcessName.ToLower().Contains("4tray") ||  // 4trayminimizer
+                    process.ProcessName.ToLower().Contains("dll") ||  // DLL Generic Injetors
                     process.ProcessName.ToLower().Contains("extreme"))      // Extreme Injector
                 {
                     process.Kill();
