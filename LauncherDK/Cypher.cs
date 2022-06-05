@@ -13,8 +13,8 @@ namespace LauncherDK
             {
                 string textToEncrypt = text;
                 string ToReturn = "";
-                string publickey = "23905722";
-                string secretkey = "89274500";
+                string publickey = ANY_PUBLIC_KEY_HERE; // Your public key here, the old one was invalidated due to open source commit.
+                string secretkey = ANY_SECRET_KEY_HERE; // Your secret key here, the old one was invalidated due to open source commit.
                 byte[] secretkeyByte = { };
                 secretkeyByte = System.Text.Encoding.UTF8.GetBytes(secretkey);
                 byte[] publickeybyte = { };
@@ -44,8 +44,8 @@ namespace LauncherDK
             {
                 string textToDecrypt = text;
                 string ToReturn = "";
-                string publickey = "23905722";
-                string secretkey = "89274500";
+                string publickey = ANY_PUBLIC_KEY_HERE; // Your public key here, the old one was invalidated due to open source commit.
+                string secretkey = ANY_SECRET_KEY_HERE; // Your secret key here, the old one was invalidated due to open source commit.
                 byte[] privatekeyByte = { };
                 privatekeyByte = System.Text.Encoding.UTF8.GetBytes(secretkey);
                 byte[] publickeybyte = { };
